@@ -9,12 +9,12 @@ import (
 )
 
 // returns a random nonce which makes hash(nonce + data) to be terminated by a specified 2-byte data
-func Mine(toBeMined []byte, desired_solution_bytes []byte, max_iter int) ([]byte, int, error) {
+func Mine(toBeMined []byte, desired_solution_bytes []byte, max_iter int64) ([]byte, int64, error) {
 	// initiate nonce of empty 4-byte
 	nonce := make([]byte, 4)
 
 	// count number of iterations to find solution
-	iters := 0
+	iters := int64(0)
 	iters_reached := false
 
 	mined := false
