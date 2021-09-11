@@ -2,6 +2,8 @@ package cli
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // test ideal cae: pass 128-chars hex-string, will result array of 64-byte
@@ -15,4 +17,23 @@ func TestCliBasic(t *testing.T) {
 	if len(command.ToBeMined) != 64 {
 		t.Errorf("Expected len: %x, Actual len: %x", 64, len(command.ToBeMined))
 	}
+}
+
+// test failure case: passging data of invalid length will result error complaining length mismatch
+func TestCliLengthMismatch(t *testing.T) {
+	valid_arg_str := "1"
+
+	args := []string{"main.go", valid_arg_str}
+
+	_, err := New(args)
+
+	error_must_contain := "length mismatch"
+	assert.Containsf(
+		t,
+		err.Error(),
+		error_must_contain,
+		"Expected '%s', contains '%s'",
+		err.Error(),
+		error_must_contain,
+	)
 }
