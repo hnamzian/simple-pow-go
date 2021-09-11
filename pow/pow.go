@@ -3,21 +3,13 @@ package pow
 import (
 	"bytes"
 	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 
 	"github.com/hnamzian/simple-pow/random"
 )
 
 // returns a random nonce which makes hash(nonce + data) to be terminated by a specified 2-byte data
-func Mine(toBeMined []byte) ([]byte, error) {
-	// create value of 2-byte as final solution
-	desired_solution_bytes, errDecode := hex.DecodeString("cafe")
-	if errDecode != nil {
-		return make([]byte, 0), errDecode
-	}
-	fmt.Printf("%x\n", desired_solution_bytes)
-
+func Mine(toBeMined []byte, desired_solution_bytes []byte) ([]byte, error) {
 	// initiate iterative solution with empty 2-byte
 	iter_solution_bytes := make([]byte, 2)
 
@@ -45,13 +37,7 @@ func Mine(toBeMined []byte) ([]byte, error) {
 }
 
 // returns true if hash of [nonce, toBeMined] will terminate with a specified bytes
-func VerifyNonce(toBeMined []byte, nonce []byte) (bool, error) {
-	// create value of 2-byte as final solution
-	desired_solution_bytes, errDecode := hex.DecodeString("cafe")
-	if errDecode != nil {
-		return false, errDecode
-	}
-
+func VerifyNonce(toBeMined []byte, nonce []byte, desired_solution_bytes []byte) (bool, error) {
 	// concat nonce and data to be mined => [nonce,toBeMined]
 	noncedData := append(nonce[:], toBeMined[:]...)
 
