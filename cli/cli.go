@@ -31,9 +31,9 @@ func New(arg []string) (CLI, error) {
 	max_iters := int64(-1)
 	if len(arg) == 3 {
 		errConv := error(nil)
-		max_iters, errConv = strconv.ParseInt(arg[2], 10, 8)
+		max_iters, errConv = strconv.ParseInt(arg[2], 10, 64)
 		if errConv != nil {
-			return CLI{}, fmt.Errorf("invalid max_iters param")
+			return CLI{}, errConv
 		}
 	}
 
