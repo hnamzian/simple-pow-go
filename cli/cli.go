@@ -30,11 +30,11 @@ func New(arg []string) (CLI, error) {
 	data_str := arg[1]
 
 	max_iters := int64(-1)
-	if len(arg) == 3 {
+	if len(arg) >= 3 {
 		errConv := error(nil)
 		max_iters, errConv = strconv.ParseInt(arg[2], 10, 64)
 		if errConv != nil {
-			return CLI{}, errConv
+			return CLI{}, fmt.Errorf("invalid pattern arg: %s", errConv)
 		}
 	}
 
