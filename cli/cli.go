@@ -3,10 +3,12 @@ package cli
 import (
 	"encoding/hex"
 	"fmt"
+	"strconv"
 )
 
 type CLI struct {
 	ToBeMined []byte
+	MaxIters int64
 }
 
 // create CLI struct from input args
@@ -20,11 +22,20 @@ func New(arg []string) (CLI, error) {
 	}
 
 	// return error if addition args provided
-	if len(arg) > 2 {
+	if len(arg) > 3 {
 		return CLI{}, fmt.Errorf("additional args not permitted")
 	}
 
 	data_str := arg[1]
+
+	max_iters := int64(-1)
+	if len(arg) == 3 {
+		errConv := error(nil)
+		max_iters, errConv = strconv.ParseInt(arg[2], 10, 64)
+		if errConv != nil {
+			return CLI{}, errConv
+		}
+	}
 
 	// verify length of provided data to be 64-bytes (=128 nibs)
 	if len(data_str) != 128 {
@@ -42,5 +53,6 @@ func New(arg []string) (CLI, error) {
 
 	return CLI{
 		ToBeMined: data_hex,
+		MaxIters: max_iters,
 	}, nil
 }

@@ -7,16 +7,35 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMineBase(t *testing.T) {
+func TestMineUntilSuccess(t *testing.T) {
 	toBeMined_str := "129df964b701d0b8e72fe7224cc71643cf8e000d122e72f742747708f5e3bb6294c619604e52dcd8f5446da7e9ff7459d1d3cefbcc231dd4c02730a22af9880c"
 	toBeMined_bytes, _ := hex.DecodeString(toBeMined_str)
 
 	desired_solution_bytes, _ := hex.DecodeString("cafe")
-	max_iters := -1
+	max_iters := int64(-1)
 
-	nonce, _, _ := Mine(toBeMined_bytes, desired_solution_bytes, max_iters)
+	nonce, _, mined, errMine := Mine(toBeMined_bytes, desired_solution_bytes, max_iters)
+
+	assert.Equal(t, errMine, nil, "Expected not to be failed, Error Message: %s", errMine)
 
 	verified, _ := VerifyNonce(toBeMined_bytes, nonce, desired_solution_bytes)
 
+	assert.Equal(t, mined, true, "mined: expected: true, actual: %v", mined)
 	assert.Equal(t, verified, true, "expected: true, actual: %x", verified)
+}
+
+func TestMineFail(t *testing.T) {
+	toBeMined_str := "129df964b701d0b8e72fe7224cc71643cf8e000d122e72f742747708f5e3bb6294c619604e52dcd8f5446da7e9ff7459d1d3cefbcc231dd4c02730a22af9880c"
+	toBeMined_bytes, _ := hex.DecodeString(toBeMined_str)
+
+	desired_solution_bytes, _ := hex.DecodeString("cafe")
+	// with high accuracy will not find solution in 5 iters
+	max_iters := int64(5)
+
+	nonce, iters, mined, errMine := Mine(toBeMined_bytes, desired_solution_bytes, max_iters)
+
+	assert.Equal(t, errMine, nil, "Expected not to be failed, Error Message: %s", errMine)
+	assert.Equal(t, nonce, []byte(nil))
+	assert.Equal(t, iters, max_iters)
+	assert.Equal(t, mined, false)
 }
