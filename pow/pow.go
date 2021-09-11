@@ -15,12 +15,13 @@ func Mine(toBeMined []byte, desired_solution_bytes []byte, max_iter int) ([]byte
 
 	// count number of iterations to find solution
 	iters := 0
+	iters_reached := false
 
 	mined := false
 
 	// verify if have reached to goal, ie,
 	// last 2 bytes of hashed(nonce + toBeMined) == desired bytes
-	for !mined || iters < max_iter {
+	for !mined && !iters_reached {
 		// generate new 4-byte random data as nonce
 		nonce, _ = random.RandomBytes(4)
 
@@ -36,6 +37,11 @@ func Mine(toBeMined []byte, desired_solution_bytes []byte, max_iter int) ([]byte
 
 		// count up iterations
 		iters++
+
+		// if max_iter < 0, loop infinite
+		if max_iter > 0 {
+			iters_reached = iters == max_iter
+		}
 
 		mined = bytes.Equal(iter_solution_bytes, desired_solution_bytes)
 	}
