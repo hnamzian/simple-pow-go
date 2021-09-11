@@ -19,10 +19,9 @@ func main() {
 
 	// set desired solution (0xcafe)
 	desired_solution_bytes, _ := hex.DecodeString("cafe")
-	// loop until reaching solution
-	max_iters := -1
+
 	// Mine...
-	nonce, iters, errMine := pow.Mine(command.ToBeMined, desired_solution_bytes, max_iters)
+	nonce, iters, errMine := pow.Mine(command.ToBeMined, desired_solution_bytes, command.MaxIters)
 	if errMine != nil {
 		panic(errMine)
 	}
