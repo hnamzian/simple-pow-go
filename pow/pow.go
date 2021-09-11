@@ -9,16 +9,18 @@ import (
 )
 
 // returns a random nonce which makes hash(nonce + data) to be terminated by a specified 2-byte data
-func Mine(toBeMined []byte, desired_solution_bytes []byte) ([]byte, error) {
-	// initiate iterative solution with empty 2-byte
-	iter_solution_bytes := make([]byte, 2)
-
+func Mine(toBeMined []byte, desired_solution_bytes []byte, max_iter int) ([]byte, int, error) {
 	// initiate nonce of empty 4-byte
 	nonce := make([]byte, 4)
 
+	// count number of iterations to find solution
+	iters := 0
+
+	mined := false
+
 	// verify if have reached to goal, ie,
 	// last 2 bytes of hashed(nonce + toBeMined) == desired bytes
-	for !bytes.Equal(iter_solution_bytes, desired_solution_bytes) {
+	for !mined || iters < max_iter {
 		// generate new 4-byte random data as nonce
 		nonce, _ = random.RandomBytes(4)
 
@@ -30,10 +32,19 @@ func Mine(toBeMined []byte, desired_solution_bytes []byte) ([]byte, error) {
 		fmt.Printf("%x\n", hashed[:])
 
 		// exteract last 2 bytes as current solution
-		iter_solution_bytes = hashed[len(hashed)-2:]
+		iter_solution_bytes := hashed[len(hashed)-2:]
+
+		// count up iterations
+		iters++
+
+		mined = bytes.Equal(iter_solution_bytes, desired_solution_bytes)
 	}
 
-	return nonce, nil
+	if mined {
+		return nonce, iters, nil
+	} else {
+		return nil, iters, nil
+	}
 }
 
 // returns true if hash of [nonce, toBeMined] will terminate with a specified bytes
