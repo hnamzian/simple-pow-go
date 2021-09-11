@@ -12,8 +12,9 @@ func TestMineBase(t *testing.T) {
 	toBeMined_bytes, _ := hex.DecodeString(toBeMined_str)
 
 	desired_solution_bytes, _ := hex.DecodeString("cafe")
+	max_iters := -1
 
-	nonce, _ := Mine(toBeMined_bytes, desired_solution_bytes)
+	nonce, _, _ := Mine(toBeMined_bytes, desired_solution_bytes, max_iters)
 
 	verified, _ := VerifyNonce(toBeMined_bytes, nonce, desired_solution_bytes)
 
