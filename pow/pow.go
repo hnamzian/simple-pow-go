@@ -9,7 +9,7 @@ import (
 )
 
 // returns a random nonce which makes hash(nonce + data) to be terminated by a specified 2-byte data
-func Mine(toBeMined []byte, desired_solution_bytes []byte, max_iter int64) ([]byte, int64, error) {
+func Mine(toBeMined []byte, desired_solution_bytes []byte, max_iter int64) ([]byte, int64, bool, error) {
 	// initiate nonce of empty 4-byte
 	nonce := make([]byte, 4)
 
@@ -47,9 +47,9 @@ func Mine(toBeMined []byte, desired_solution_bytes []byte, max_iter int64) ([]by
 	}
 
 	if mined {
-		return nonce, iters, nil
+		return nonce, iters, mined, nil
 	} else {
-		return nil, iters, nil
+		return nil, iters, mined, nil
 	}
 }
 
