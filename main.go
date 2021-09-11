@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/hex"
 	"fmt"
 	"os"
 
@@ -17,11 +16,8 @@ func main() {
 
 	fmt.Printf("ToBeMinde Data: %x\n", command.ToBeMined[:])
 
-	// set desired solution (0xcafe)
-	desired_solution_bytes, _ := hex.DecodeString("cafe")
-
 	// Mine...
-	nonce, iters, mined, errMine := pow.Mine(command.ToBeMined, desired_solution_bytes, command.MaxIters)
+	nonce, iters, mined, errMine := pow.Mine(command.ToBeMined, command.Pattern, command.MaxIters)
 	if errMine != nil {
 		panic(errMine)
 	}
@@ -30,11 +26,11 @@ func main() {
 		fmt.Printf("Nonce: %x found in %d iterations\n", nonce, iters)
 
 		// verify solution
-		verified, errVerify := pow.VerifyNonce(command.ToBeMined, nonce, desired_solution_bytes)
+		verified, errVerify := pow.VerifyNonce(command.ToBeMined, nonce, command.Pattern)
 		if errVerify != nil {
 			panic(errVerify)
 		}
-		
+
 		fmt.Printf("Nonce Verified: %v\n", verified)
 	} else {
 		fmt.Printf("Couldn't find solution in %d iterations\n", iters)
